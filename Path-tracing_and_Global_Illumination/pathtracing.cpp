@@ -1,4 +1,4 @@
-//#define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846
 #include <stdio.h>
 #include <random>
 #include <vector>
@@ -604,7 +604,7 @@ void render(const Options& options, const vector<unique_ptr<Object> >& objects, 
     float gamma = 1;
 
     ofstream ofs;
-    ofs.open("out.ppm");
+    ofs.open("out2.ppm");
     ofs << "P6\n" << options.width << " " << options.height << "\n255\n";
     for (uint32_t i = 0; i < options.height * options.width; i++) {
 
@@ -629,11 +629,25 @@ int main()
     options.height = 512;
     options.cameraToWorld = Matrix44f(0.965926f, 0.0f, -0.258819f, 0.0f, 0.0066019f, 0.999675f, 0.0246386f, 0.0f, 0.258735f, -0.0255078f, 0.965612f, 0.0f, 0.764985f, 0.791882f, 5.868275f, 1.0f);
 
-    TriangleMesh* plane = loadPolyMeshFromFile("./planegi.geo", kIdentity);
+    Matrix44f k1(2,0,0,0,
+                0,2,0,0,
+                0,0,2,0,
+                0,0,0,1);
+
+    TriangleMesh* plane = loadPolyMeshFromFile("./planegi.geo", k1);
     if (plane != nullptr) {
         plane->albedo = Vec3f(0.225f, 0.114f, 0.114f);
         objects.push_back(unique_ptr<Object>(plane));
     }
+   Matrix44f kR(2,0,0,0,
+                0,0,-1,0,
+                0,1,0,0,
+                0,1,-2,1);
+   TriangleMesh* plane2 = loadPolyMeshFromFile("./planegi.geo", kR);
+   if (plane != nullptr) {
+       plane->albedo = Vec3f(0.225f, 0.114f, 0.114f);
+       objects.push_back(unique_ptr<Object>(plane2));
+   }
 
     TriangleMesh* cube = loadPolyMeshFromFile("./cubegi.geo", kIdentity);
     if (cube != nullptr) {
